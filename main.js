@@ -1,31 +1,37 @@
-var roleHarvester = require('role.harvester');
-var roleUpgrader = require('role.upgrader');
-var roleBuilder = require('role.builder');
+/*
+
+Inspiration: 
+https://github.com/Pantek59/Screeps-Noob-Code
+https://github.com/Akuukis/screeps
+https://www.youtube.com/playlist?list=PL0EZQ169YGlor5rzeJEYYPE3tGYT2zGT2
+or just search for screeps on github
+
+*/
+
+// Data
+var roles = require('data.roles');
+
+// Factories
+var creepFactory = require('creepFactory');
+
+// Utils
+var utils = require('utils');
+
 var buildRoads = require('build.roads');
 
 module.exports.loop = function () {
 
-    var intervals = {
-        "0s": false,
-        "10s": (Game.time % 10)+1 == 10,
-        "20s": (Game.time % 20)+1 == 20,
-        "30s": (Game.time % 30)+1 == 30,
-        "40s": (Game.time % 40)+1 == 40,
-        "50s": (Game.time % 50)+1 == 50,
-        "100s": (Game.time % 100)+1 == 100,
+    //First load initialize;
+    if (Memory.initialized == undefined) {
+        Memory.initialized = true;
+        Memory.spawns = [Object.keys(Game.spawns)[0]];
+        Memory.creepCount = 0;
+        //Construct roads from spawn to all sources in room
+        buildRoads.initiate();
     }
 
-    var workers = [
-        'builder',
-        'builder',
-        'upgrader',
-        'upgrader',
-        'builder'
-    ];
-    var workerBody = [WORK, CARRY, MOVE, MOVE];
-    if (Memory.creepCount == undefined) {
-        Memory.creepCount = 0;
-    } else if(intervals["10s"]){
+    //Memory cleaining if dead creeps
+    if (utils.intervals.every10 && Memory.initialized) {
         Memory.creepCount = 0;
         for (var i in Memory.creeps) {
             if (!Game.creeps[i]) {
@@ -35,9 +41,13 @@ module.exports.loop = function () {
             }
         }
     }
-    
+
+    //Start creep factory
+    creepFactory();
+    /*
     if (Memory.creepCount < workers.length && Game.spawns['Spawn1'].canCreateCreep(workerBody) == OK) {
-        console.log('creep spawning with role: ' + workers[Memory.creepCount].toString());
+    
+        workers[Memory.creepCount].toString());
         
         Game.spawns['Spawn1'].createCreep(workerBody, undefined, {
             role: workers[Memory.creepCount].toString()
@@ -57,9 +67,8 @@ module.exports.loop = function () {
             roleBuilder.run(creep);
         }
     }
-    
-    if(intervals["10s"]){
-        console.log('tick');
-        buildRoads.initiate();
-    }
+        */
+
+
+
 }
