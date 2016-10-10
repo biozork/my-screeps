@@ -11,13 +11,13 @@ module.exports = {
         size: 250,
         sizeLimit: 3
     },
-    repairer: {
+    builder: {
         body: [WORK, CARRY, MOVE],
         baseRole: "worker",
         size: 200,
         sizeLimit: 2
     },
-    builder: {
+    repairer: {
         body: [WORK, CARRY, MOVE],
         baseRole: "worker",
         size: 200,
