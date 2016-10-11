@@ -150,20 +150,17 @@ var sQuery = function (query) {
 
         //returns array of empty adjecent positions, for construction or otherwise
         var emptyAdjacent = function (ignoreCreep = true) {
-            var top = query.y - 1;
-            var left = query.x - 1;
-            var bottom = query.y + 1;
-            var right = query.x + 1;
-            var coords = [];
-            var area = sQuery.randomCreep(query.roomName).room.lookAtArea(top, left, bottom, right);
+            let c = [query.y-1, query.x-1, query.y+1, query.x+1]; // top, left, bottom, right
+            let area = sQuery.randomCreep(query.roomName).room.lookAtArea(c[0], c[1], c[2], c[3]);
 
+            let coords = [];
             for (var y in area) {
                 for (var x in area[y]) {
                     for (var key in area[y][x][0]) {
                         if (key === 'terrain' && (area[y][x][0].terrain === 'plain' || area[y][x][0].terrain === 'swamp')) {
 
                             //dont include original coordinate
-                            var Y = parseInt(y),
+                            let Y = parseInt(y),
                                 X = parseInt(x);
                             if (query.x != X || query.y != Y) {
                                 coords.push(Game.rooms[query.roomName].getPositionAt(X, Y));
@@ -175,6 +172,13 @@ var sQuery = function (query) {
 
             return coords;
         }
+        
+        emptyAdjacent.prototype.forEach = function(positions, callback){
+            for(let i = 0; i < positions.length; i++ ){
+                callback(positions[i]);
+            }
+        }
+        
     } else {
         throw 'Object type was not recognized by the sQuery library'
     }
